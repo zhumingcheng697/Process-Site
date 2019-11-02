@@ -45,8 +45,9 @@ struct ContentView: View {
             Toggle(isOn: $showPar.animation()) {
                 Text("Show Paragraph")
                     .font(.headline)
-            }.padding(.horizontal)
-                .padding(.bottom)
+            }
+            .padding(.horizontal)
+            .padding(.bottom)
             
             Stepper(value: $price, in: 199...299) {
                 Text("Change Price")
