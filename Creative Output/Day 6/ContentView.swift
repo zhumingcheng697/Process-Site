@@ -29,6 +29,7 @@ struct ContentView: View {
             .rotation3DEffect(Angle(degrees: self.image1Pressed ? 10 : 0), axis: (x:1, y:0, z:0))
             .animation(.easeInOut)
             .padding(.horizontal, 40)
+            
             HStack{
                 Text("AirPods Pro")
                     .font(.largeTitle)
@@ -40,6 +41,7 @@ struct ContentView: View {
             }
             .padding(.horizontal)
             .padding(.top)
+            
             Toggle(isOn: $showPar.animation()) {
                 Text("Show Paragraph")
                     .font(.headline)
@@ -67,6 +69,7 @@ struct ContentView: View {
                         .padding(.horizontal)
                         .padding(.bottom)
                 }
+                
                 Image("Noise_Cancellation")//the image on the top
                     .resizable()
                     .scaledToFit()
@@ -78,6 +81,7 @@ struct ContentView: View {
                 }
                 .animation(.default)
                 .padding(self.image2Pressed ? .vertical : .horizontal)
+                
                 Image("Noise_Cancellation")//the image on the bottom
                     .resizable()
                     .scaledToFit()
