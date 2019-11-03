@@ -92,7 +92,7 @@ struct ContentView: View {
            ScrollView{
                if showPar{
                    Text("AirPods Pro are sweat and water resistant for non-water sports and exercise. AirPods Pro were tested under controlled laboratory conditions, and have a rating of IP\(Int(rating)) under IEC standard 60529. Sweat and water resistance are not permanent conditions and resistance might decrease as a result of normal wear. Do not attempt to charge wet AirPods Pro; refer to https://support.apple.com/kb/HT210711 for cleaning and drying instructions. The charging case is not sweat or water resistant.")
-                       .font(.system(size: CGFloat(price-199)))
+                       .font(.system(size: CGFloat(price-198)))
                        .fontWeight(fontWeight[selectedIndex])
                        .fixedSize(horizontal: false, vertical: true)
                        .padding(.horizontal)
