@@ -43,9 +43,11 @@ struct CourseView: View {
                 Image(systemName: course.glyph)
                     .font(.largeTitle)
                     .padding(.trailing, 6)
+                
                 VStack(alignment: .leading) {
                     Text(course.name)
                         .font(.title)
+                    
                     Text(course.code)
                         .font(.subheadline)
                 }
