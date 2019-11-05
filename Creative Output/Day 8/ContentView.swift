@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-class Course{
+class Course {
     var glyph: String
     var name: String
     var code: String
