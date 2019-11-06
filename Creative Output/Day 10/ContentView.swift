@@ -9,7 +9,7 @@
 
 import SwiftUI
 
-class Course: Identifiable {
+class Course: Identifiable, ObservableObject {
     var glyph: String
     var name: String
     var code: String
@@ -37,10 +37,10 @@ var myCourses = [
     Course(glyph: "camera", name: "Still & Moving Images", code: "DM-UY 2263 Section D", date: "Tuesday & Thursday", time: "4:30PM - 6:20PM", location: "370 Jay Street, Room 309", bgColor: Color.purple)
 ]
 
-class Schedule: ObservableObject{
+class Schedule: ObservableObject {
     @Published var courses: [Course]
     
-    init(courses: [Course]){
+    init(courses: [Course]) {
         self.courses = courses
     }
     
@@ -48,6 +48,7 @@ class Schedule: ObservableObject{
 
 struct CourseView: View {
     var course: Course
+    
     var body: some View {
         HStack {
             Spacer()
@@ -103,9 +104,9 @@ struct ContentView: View {
                     .padding(8)
             }
             
-            ScrollView{
-                VStack(spacing: 0){
-                    ForEach(mySchedule.courses){ course in
+            ScrollView {
+                VStack(spacing: 0) {
+                    ForEach(mySchedule.courses) { course in
                         CourseView(course: course)
                             .padding(.top, 12)
                     }
