@@ -39,7 +39,6 @@ var courses = [
 
 struct CourseView: View {
     var course: Course
-    
     var body: some View {
         HStack {
             Spacer()
