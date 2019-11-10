@@ -198,7 +198,6 @@ struct EditingView: View {
                     Section {
                         EmptyView()
                     }
-                    
                     Button(action: {
                         self.shouldWarn = true
                     }) {
@@ -242,6 +241,7 @@ struct EditingView: View {
                         Alert(title: Text("Oops…"), message: Text("Please fill in every blank."), dismissButton: .default(Text("OK")))
                 })
         }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
