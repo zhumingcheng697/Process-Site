@@ -3,24 +3,23 @@
 //  Courses
 //
 //  Created by McCoy Zhu on 11/4/19.
-//  Modified by McCoy Zhu on 11/10/19.
+//  Modified by McCoy Zhu on 11/11/19.
 //  Copyright © 2019 McCoy Zhu. All rights reserved.
 //
 
 import SwiftUI
-import UIKit
 
-class Course: Identifiable {
+class Course: NSObject, NSCoding, Identifiable {
     var glyph: String
     var name: String
     var code: String
     var day: String
     var time: String
     var location: String
-    var bgColor: Color
+    var bgColor: UIColor
     var message: String
     
-    init(glyph: String = "calendar.badge.plus", name: String, code: String, day: String, time: String, location: String = "Location TBA", bgColor: Color = Color("NYU Violet"), message: String = "") {
+    init(glyph: String = "calendar.badge.plus", name: String, code: String, day: String, time: String, location: String = "Location TBA", bgColor: UIColor = UIColor(named: "NYU Violet")!, message: String = "") {
         self.glyph = glyph
         self.name = name
         self.code = code
@@ -31,26 +30,40 @@ class Course: Identifiable {
         self.message = message
     }
     
+    required init?(coder: NSCoder) {
+        self.glyph = coder.decodeObject(forKey: "glyph") as? String ?? "scissors"
+        self.name = coder.decodeObject(forKey: "name") as? String ?? "Ideation & Prototyping"
+        self.code = coder.decodeObject(forKey: "code") as? String ?? "DM-UY 1143 Section C"
+        self.day = coder.decodeObject(forKey: "day") as? String ?? "Monday & Wednesday"
+        self.time = coder.decodeObject(forKey: "time") as? String ?? "8:30AM – 10:20AM"
+        self.location = coder.decodeObject(forKey: "location") as? String ?? "370 Jay Street, Room 413"
+        self.bgColor = coder.decodeObject(forKey: "bgColor") as? UIColor ?? UIColor(named: "NYU Violet")!
+        self.message = coder.decodeObject(forKey: "message") as? String ?? ""
+    }
+    
+    func encode(with coder: NSCoder) {
+        coder.encode(self.glyph, forKey: "glyph")
+        coder.encode(self.name, forKey: "name")
+        coder.encode(self.code, forKey: "code")
+        coder.encode(self.day, forKey: "day")
+        coder.encode(self.time, forKey: "time")
+        coder.encode(self.location, forKey: "location")
+        coder.encode(self.bgColor, forKey: "bgColor")
+        coder.encode(self.message, forKey: "message")
+    }
+    
     func copy(removeMessage: Bool) -> Course {
         return Course(glyph: self.glyph.isEmpty ? "calendar.badge.plus" : self.glyph.lowercased().replacingOccurrences(of: " ", with: ""), name: self.name, code: self.code, day: self.day, time: self.time, location: self.location.isEmpty ? "Location TBA" : self.location, bgColor: self.bgColor, message: removeMessage ? "" : self.message)
     }
 }
 
-let myCourses = [
-    Course(glyph: "arkit", name: "3D Modeling", code: "DM-UY 2133 Section A", day: "Monday & Wednesday", time: "8:30AM – 10:20AM", location: "370 Jay Street, Room 311", bgColor: Color.red),
-    Course(glyph: "square.and.pencil", name: "Writing Workshop II", code: "EXPOS-UA 9 Section TBA", day: "Monday & Wednesday", time: "4:30PM - 5:45PM", bgColor: Color.orange),
-    Course(glyph: "hifispeaker.fill", name: "Audio Foundation", code: "DM-UY 1113 Section C", day: "Tuesday & Thursday", time: "10:30AM - 12:20PM", location: "370 Jay Street, Room 312", bgColor: Color.yellow),
-    Course(glyph: "link", name: "Intro to Web Dev", code: "DM-UY 2193 Section C", day: "Tuesday & Thursday", time: "2:30PM - 4:20PM", location: "370 Jay Street, Room 308", bgColor: Color.green),
-    Course(glyph: "camera", name: "Still & Moving Images", code: "DM-UY 2263 Section D", day: "Tuesday & Thursday", time: "4:30PM - 6:20PM", location: "370 Jay Street, Room 309", bgColor: Color.purple)
+let defaultCourses = [
+    Course(glyph: "arkit", name: "3D Modeling", code: "DM-UY 2133 Section A", day: "Monday & Wednesday", time: "8:30AM – 10:20AM", location: "370 Jay Street, Room 311", bgColor: UIColor.systemRed),
+    Course(glyph: "square.and.pencil", name: "Writing Workshop II", code: "EXPOS-UA 9 Section TBA", day: "Monday & Wednesday", time: "4:30PM - 5:45PM", bgColor: UIColor.systemOrange),
+    Course(glyph: "hifispeaker.fill", name: "Audio Foundation", code: "DM-UY 1113 Section C", day: "Tuesday & Thursday", time: "10:30AM - 12:20PM", location: "370 Jay Street, Room 312", bgColor: UIColor.systemYellow),
+    Course(glyph: "link", name: "Intro to Web Dev", code: "DM-UY 2193 Section C", day: "Tuesday & Thursday", time: "2:30PM - 4:20PM", location: "370 Jay Street, Room 308", bgColor: UIColor.systemGreen),
+    Course(glyph: "camera", name: "Still & Moving Images", code: "DM-UY 2263 Section D", day: "Tuesday & Thursday", time: "4:30PM - 6:20PM", location: "370 Jay Street, Room 309", bgColor: UIColor.systemPurple)
 ]
-
-class Schedule: ObservableObject {
-    @Published var courses: [Course]
-    
-    init(courses: [Course]) {
-        self.courses = courses
-    }
-}
 
 struct CourseView: View {
     var course: Course
@@ -70,7 +83,6 @@ struct CourseView: View {
                         Text(course.name)
                             .foregroundColor(.white)
                             .font(.title)
-                        
                         Text(course.code)
                             .foregroundColor(.white)
                             .font(.subheadline)
@@ -80,10 +92,8 @@ struct CourseView: View {
                 
                 Text(course.day)
                     .foregroundColor(.white)
-                
                 Text(course.time)
                     .foregroundColor(.white)
-                
                 Text(course.location)
                     .foregroundColor(.white)
             }
@@ -91,7 +101,7 @@ struct CourseView: View {
             
             Spacer()
         }
-        .background(course.bgColor)
+        .background(Color(course.bgColor))
         .cornerRadius(13)
         .animation(nil)
     }
@@ -99,11 +109,11 @@ struct CourseView: View {
 
 struct EditingView: View {
     @Binding var course: Course
-    @State var shouldAlert = false
-    @State var shouldWarn = false
-    @State var selectedIndex = 0
-    let colorDescriptions = ["NYU Violet", "Red", "Orange", "Yellow", "Green", "Blue", "Purple", "Pink", "Gray", "Black"]
-    let colors = [Color("NYU Violet"), Color.red, Color.orange, Color.yellow, Color.green, Color.blue, Color.purple, Color.pink, Color.gray, Color.black]
+    @State private var shouldAlert = false
+    @State private var shouldWarn = false
+    @State private var selectedIndex = 0
+    let colorDescriptions = ["NYU Violet", "Red", "Orange", "Yellow", "Green", "Teal", "Blue", "Purple", "Gray", "Black"]
+    let colors = [UIColor(named: "NYU Violet")!, UIColor.systemRed, UIColor.systemOrange, UIColor.systemYellow, UIColor.systemGreen, UIColor.systemTeal, UIColor.systemBlue, UIColor.systemPurple, UIColor.systemGray2, UIColor.black]
     var onDismiss: () -> ()
     
     var body: some View {
@@ -176,13 +186,16 @@ struct EditingView: View {
                 Section {
                     HStack {
                         Text("Color")
+                        
                         Spacer()
+                        
                         Text(self.colorDescriptions[selectedIndex])
                             .fontWeight(.semibold)
-                            .foregroundColor(self.colors[selectedIndex])
+                            .foregroundColor(Color(self.colors[selectedIndex]))
                     }
                     HStack {
                         Spacer()
+                        
                         Picker(selection: $selectedIndex, label: Text("Color")) {
                             ForEach(0 ..< colors.count) { index in
                                 Text(self.colorDescriptions[index]).tag(index)
@@ -190,6 +203,7 @@ struct EditingView: View {
                         }
                         .labelsHidden()
                         .pickerStyle(WheelPickerStyle())
+                        
                         Spacer()
                     }
                 }
@@ -204,8 +218,9 @@ struct EditingView: View {
                         Text("Delete")
                             .foregroundColor(.red)
                     }
+                        
                     .alert(isPresented: self.$shouldWarn, content: {
-                        Alert(title: Text("Delete “\(self.course.name.isEmpty ? (self.course.message == "New Course" ? "New Course" : "Untitled Course") : self.course.name)”?"), message: Text("This course will be permanently deleted from your schedule."), primaryButton: .cancel(), secondaryButton: .destructive(Text("Delete"), action: {
+                        Alert(title: Text("Delete “\(self.course.name.isEmpty ? (self.course.message == "New Course" ? "New Course" : "Untitled Course") : self.course.name)”?"), message: Text("This course will be deleted from your schedule."), primaryButton: .cancel(), secondaryButton: .destructive(Text("Delete"), action: {
                             self.course.message = "**deleted**"
                             self.onDismiss()
                         }))
@@ -225,7 +240,8 @@ struct EditingView: View {
                         self.onDismiss()
                     }) {
                         Text("Cancel")
-                    }, trailing:
+                    },
+                                    trailing:
                     Button(action: {
                         if self.course.name == "" || self.course.code == "" || self.course.day == "" || self.course.time == "" {
                             self.shouldAlert = true
@@ -237,6 +253,7 @@ struct EditingView: View {
                         Text("Done")
                             .bold()
                     }
+                        
                     .alert(isPresented: self.$shouldAlert) {
                         Alert(title: Text("Oops…"), message: Text("Please fill in every blank."), dismissButton: .default(Text("OK")))
                 })
@@ -246,59 +263,92 @@ struct EditingView: View {
 }
 
 struct ContentView: View {
-    @ObservedObject var mySchedule = Schedule(courses: myCourses)
-    @State var editing = false
-    @State var adding = false
-    @State var shouldWarn = false
-    @State var currentIndex = 0
-    @State var animationLength = 0.15
+    @State var courses = myCourses
     @State var tempCourse = Course(name: "", code: "", day: "", time: "")
+    @State private var acting = false
+    @State private var adding = false
+    @State private var editing = false
+    @State private var shouldWarn = false
+    @State private var currentIndex = 0
+    @State private var animationLength = 0.15
     
     var body: some View {
         VStack {
-            Image(systemName: "plus")
-                .padding(8)
-                .foregroundColor(.blue)
-                .opacity(self.adding ? 0.5 : 1)
-                .onTapGesture {
+            HStack {
+                Button(action: {
                     self.animationLength = 0.6
                     self.tempCourse = Course(name: "", code: "", day: "", time: "", message: "New Course")
                     self.adding = true
-            }
-            .contextMenu {
-                Button(action: {
-                    self.animationLength = 0.4
-                    self.mySchedule.courses.insert(Course(glyph: "scissors", name: "Ideation & Prototyping", code: "DM-UY 1143 Section C", day: "Monday & Wednesday", time: "8:30AM – 10:20AM", location: "370 Jay Street, Room 413"), at: 0)
                 }) {
-                    Text("Add New Dummy")
-                    Image(systemName: "plus.square.on.square")
+                    Image(systemName: "plus")
                 }
-            }
-            .animation(.default)
-            .sheet(isPresented: self.$adding) {
-                EditingView(course: self.$tempCourse, onDismiss: {
-                    if self.tempCourse.message != "**canceled**" && self.tempCourse.message != "**deleted**" {
-                        self.mySchedule.courses.insert(self.tempCourse.copy(removeMessage: true), at: 0)
-                    }
-                    self.adding = false
+                    
+                .sheet(isPresented: self.$editing) {
+                    EditingView(course: self.$tempCourse, onDismiss: {
+                        if self.tempCourse.message == "**deleted**" {
+                            self.courses.remove(at: self.currentIndex)
+                            self.animationLength = 0.53
+                        } else if self.tempCourse.message != "**canceled**" {
+                            self.animationLength = 0.53
+                            self.courses[self.currentIndex] = self.tempCourse.copy(removeMessage: true)
+                        }
+                        UserDefaults.standard.set(try? NSKeyedArchiver.archivedData(withRootObject: self.courses, requiringSecureCoding: false), forKey: "storedCourses")
+                        self.editing = false
+                    })
+                }
+                
+                Spacer()
+                
+                Button(action: {
+                    self.acting = true
+                }) {
+                    Image(systemName: "ellipsis")
+                }
+                    
+                .actionSheet(isPresented: $acting, content: {
+                    ActionSheet(title: Text("Hi! What do you want to do?"), buttons: [
+                        .default(Text("Add New Default Course"), action: {
+                            self.animationLength = 0.4
+                            self.courses.insert(Course(glyph: "scissors", name: "Ideation & Prototyping", code: "DM-UY 1143 Section C", day: "Monday & Wednesday", time: "8:30AM – 10:20AM", location: "370 Jay Street, Room 413"), at: 0)
+                            UserDefaults.standard.set(try? NSKeyedArchiver.archivedData(withRootObject: self.courses, requiringSecureCoding: false), forKey: "storedCourses")}),
+                        .destructive(Text("Restore Last Saved Schedule"), action: {
+                            self.animationLength = 0.15
+                            self.courses = myCourses
+                            UserDefaults.standard.set(try? NSKeyedArchiver.archivedData(withRootObject: self.courses, requiringSecureCoding: false), forKey: "storedCourses")}),
+                        .destructive(Text("Restore Default Schedule"), action: {
+                            self.animationLength = 0.15
+                            self.courses = defaultCourses
+                            UserDefaults.standard.set(try? NSKeyedArchiver.archivedData(withRootObject: self.courses, requiringSecureCoding: false), forKey: "storedCourses")}),
+                        .cancel()]
+                    )
                 })
             }
+            .padding(.vertical, 9)
+            .padding(.horizontal, 22)
             
             ZStack {
                 Color(UIColor.secondarySystemBackground)
                     .edgesIgnoringSafeArea(.all)
-                
+                    .sheet(isPresented: self.$adding) {
+                        EditingView(course: self.$tempCourse, onDismiss: {
+                            if self.tempCourse.message != "**canceled**" && self.tempCourse.message != "**deleted**" {
+                                self.courses.insert(self.tempCourse.copy(removeMessage: true), at: 0)
+                                UserDefaults.standard.set(try? NSKeyedArchiver.archivedData(withRootObject: self.courses, requiringSecureCoding: false), forKey: "storedCourses")
+                            }
+                            self.adding = false
+                        })
+                }
                 ScrollView {
                     VStack {
-                        ForEach(mySchedule.courses) { course in
+                        ForEach(courses) { course in
                             CourseView(course: course)
                                 .contextMenu {
                                     Button(action: {
                                         self.animationLength = 0.6
-                                        self.currentIndex = self.mySchedule.courses.firstIndex(where: {
+                                        self.currentIndex = self.courses.firstIndex(where: {
                                             $0.id == course.id
                                         })!
-                                        self.tempCourse = self.mySchedule.courses[self.currentIndex].copy(removeMessage: true)
+                                        self.tempCourse = self.courses[self.currentIndex].copy(removeMessage: true)
                                         self.editing = true
                                     }) {
                                         Text("Edit")
@@ -306,42 +356,32 @@ struct ContentView: View {
                                     }
                                     
                                     Button(action: {
-                                        self.currentIndex = self.mySchedule.courses.firstIndex(where: {
+                                        self.currentIndex = self.courses.firstIndex(where: {
                                             $0.id == course.id
                                         })!
-                                        self.tempCourse = self.mySchedule.courses[self.currentIndex].copy(removeMessage: true)
+                                        self.tempCourse = self.courses[self.currentIndex].copy(removeMessage: true)
                                         self.shouldWarn = true
                                     }) {
                                         Text("Delete")
                                         Image(systemName: "trash")
                                     }
+                                        
                                     .alert(isPresented: self.$shouldWarn, content: {
-                                        Alert(title: Text("Delete “\(self.tempCourse.name)”?"), message: Text("This course will be permanently deleted from your schedule."), primaryButton: .cancel(), secondaryButton: .destructive(Text("Delete"), action: {
+                                        Alert(title: Text("Delete “\(self.tempCourse.name)”?"), message: Text("This course will be deleted from your schedule."), primaryButton: .cancel(), secondaryButton: .destructive(Text("Delete"), action: {
                                             self.animationLength = 0.05
-                                            self.mySchedule.courses.remove(at: self.currentIndex)
+                                            self.courses.remove(at: self.currentIndex)
+                                            UserDefaults.standard.set(try? NSKeyedArchiver.archivedData(withRootObject: self.courses, requiringSecureCoding: false), forKey: "storedCourses")
                                         }))
                                     })
                             }
                             .padding(.horizontal)
                             .onTapGesture {
                                 self.animationLength = 0.6
-                                self.currentIndex = self.mySchedule.courses.firstIndex(where: {
+                                self.currentIndex = self.courses.firstIndex(where: {
                                     $0.id == course.id
                                 })!
-                                self.tempCourse = self.mySchedule.courses[self.currentIndex].copy(removeMessage: true)
-                                self.editing.toggle()
-                            }
-                            .sheet(isPresented: self.$editing) {
-                                EditingView(course: self.$tempCourse, onDismiss: {
-                                    if self.tempCourse.message == "**deleted**" {
-                                        self.mySchedule.courses.remove(at: self.currentIndex)
-                                        self.animationLength = 0.53
-                                    } else if self.tempCourse.message != "**canceled**" {
-                                        self.animationLength = 0.53
-                                        self.mySchedule.courses[self.currentIndex] = self.tempCourse.copy(removeMessage: true)
-                                    }
-                                    self.editing = false
-                                })
+                                self.tempCourse = self.courses[self.currentIndex].copy(removeMessage: true)
+                                self.editing = true
                             }
                         }
                     }

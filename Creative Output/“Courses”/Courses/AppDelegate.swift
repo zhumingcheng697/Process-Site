@@ -3,11 +3,13 @@
 //  Courses
 //
 //  Created by McCoy Zhu on 11/4/19.
+//  Modified by McCoy Zhu on 11/11/19.
 //  Copyright © 2019 McCoy Zhu. All rights reserved.
 //
 
 import UIKit
 
+var myCourses = defaultCourses
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -15,6 +17,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        if let restoredData = UserDefaults.standard.data(forKey: "storedCourses"){
+            if (try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(restoredData) as? [Course]) != nil {
+                myCourses = (try! NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(restoredData) as? [Course])!
+            }
+        }     
         return true
     }
 
