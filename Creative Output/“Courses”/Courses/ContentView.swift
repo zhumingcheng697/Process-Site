@@ -308,7 +308,7 @@ struct ContentView: View {
                 .actionSheet(isPresented: $acting, content: {
                     ActionSheet(title: Text("Hi! What do you want to do?"), buttons: [
                         .default(Text("Add New Default Course"), action: {
-                            self.animationLength = 0.4
+                            self.animationLength = 0.15
                             self.courses.insert(Course(glyph: "scissors", name: "Ideation & Prototyping", code: "DM-UY 1143 Section C", day: "Monday & Wednesday", time: "8:30AM – 10:20AM", location: "370 Jay Street, Room 413"), at: 0)
                             UserDefaults.standard.set(try? NSKeyedArchiver.archivedData(withRootObject: self.courses, requiringSecureCoding: false), forKey: "storedCourses")}),
                         .destructive(Text("Restore Last Saved Schedule"), action: {
