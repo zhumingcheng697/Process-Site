@@ -3,7 +3,7 @@
 //  Courses
 //
 //  Created by McCoy Zhu on 11/4/19.
-//  Modified by McCoy Zhu on 11/11/19.
+//  Modified by McCoy Zhu on 12/7/19.
 //  Copyright © 2019 McCoy Zhu. All rights reserved.
 //
 
@@ -53,7 +53,7 @@ class Course: NSObject, NSCoding, Identifiable {
     }
     
     func copy(removeMessage: Bool) -> Course {
-        return Course(glyph: self.glyph.isEmpty ? "calendar.badge.plus" : self.glyph.lowercased().replacingOccurrences(of: " ", with: ""), name: self.name, code: self.code, day: self.day, time: self.time, location: self.location.isEmpty ? "Location TBA" : self.location, bgColor: self.bgColor, message: removeMessage ? "" : self.message)
+        return Course(glyph: (self.glyph.isEmpty || UIImage(systemName: self.glyph) == nil) ? "calendar.badge.plus" : self.glyph.lowercased().replacingOccurrences(of: " ", with: ""), name: self.name, code: self.code, day: self.day, time: self.time, location: self.location.isEmpty ? "Location TBA" : self.location, bgColor: self.bgColor, message: removeMessage ? "" : self.message)
     }
 }
 
